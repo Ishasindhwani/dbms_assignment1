@@ -1,0 +1,63 @@
+4.create database employees;
+use employess;
+create table employee(
+person_name varchar(50) primary key,
+street varchar(50),
+city varchar(50));
+
+create table company (
+company_name varchar(50) primary key,
+city varchar(50));
+
+create table works(
+person_name varchar(50),
+company_name varchar(50),
+salary decimal(10,3),
+foreign key (person_name) references employee(person_name) on delete cascade,
+foreign key(company_name) references company(company_name) on delete cascade);
+ 
+create table manages(
+person_name varchar(50),
+manager_name varchar(50),
+foreign key (person_name) references employee(person_name) on delete cascade);
+
+insert into employee values
+(‘Helen’,’23 Hudson’,’Delhi’),
+(‘Harry’,’24 Milton’, ‘Dehradun’),
+(‘Henry’, ’24 Lane’,’Delhi’),
+(‘John’, ’12 Lane’,’Delhi’),
+(‘Jake,’1 Hudson’,’Gurgaon’));
+
+Insert into company values
+(‘Samba Bank’,’Delhi’),
+(‘Axis Bank’,’Kerala’),
+(‘SBI Bank’,’Delhi’),
+(‘NCB bank’,’Noida’),
+(‘Samba Bank’,’Gurgaon’);
+
+Insert into works values
+(‘Henry’,’Samba bank’,200000),
+(‘Helen’,’Axis Bank’,’500000,
+(‘Harry’ ,’NCB bank’, 3400000),
+(‘John’, ‘Axis bank’, 45000),
+(‘Jake’,’NCB bank’,450000);
+
+Insert into manages values
+(‘Henry’,’Tina’),
+(‘Harry’,’John’),
+(‘Helen’,’ Alan’),
+(‘John’, ‘Daisy’),
+(‘Jake’,’Jake’);
+primary key: person_name in table employee, company_name in table company
+foreign key: person_name from table works, company_table in table works, person_name in table manages
+
+alter table employee
+ add column email varchar(20);
+select distinct(manager_name) from manages m, works w where m.person_name=w.person_name and (w.company_name="Samba bank" or w.Company_name="NCB Bank");
+select e.person_name, e.street, e.city, w.salary from employee e, works w where e.person_name=w.person_name and w.company_name="Samba Bank" and w.salary>10000;
+select e.person_name from employee e, works w, company c where e.person_name=w.person_name and e.city=c.city and w.company_name=c.company_name;
+select company_name, max(salary), min(salary), avg(salary) from works 
+group by company_name;
+select company_name, sum(salary), count(company_name) as "number of employees" from works group by company_name;
+select company_name, 
+max(salary) from works;
