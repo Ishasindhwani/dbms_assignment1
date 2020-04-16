@@ -1,0 +1,50 @@
+create database students;
+use students;
+create table personal_info (
+roll_no int primary key,
+name varchar(30) not null,
+DOB date not null,
+Address varchar(50) not null,
+Marks_12th int not null,
+Phone_no varchar(10) not null
+);
+
+Create table paper_details(
+Paper_code int primary key,
+Paper_name varchar(30) unique);
+
+Create table academic_details(
+Roll_no int primary_key,
+Paper_code int not null,
+Attendance int not null,
+Marks int not null,
+Foreign key (roll_no) references personal_info (roll_no) on delete cascade,
+Foreign key (paper_code) references paper_details (paper_code) on delete cascade);
+
+Primary key - Roll_no in table personal_info,  Paper_code in table Paper_details
+Foreign key - Roll_no in table Academic_details, Paper_code in table Academic_Details
+Insert into personal_info values (1205,’Helen’,’2001-11-07’,’Delhi’,’9454123456’),
+(1212,’Henry’,’2000-12-12’,’Delhi’,’9656123456’),
+(1234,’John’,’2001-12-18’,’Uttarakhand’,’9412345678’),
+(1222,’Jake’,’2000-09-09’,’Kerala’,’9812345678’),
+(1209,’Harry’,’2001-01-01’,’Delhi’,’9812347654’);
+
+Insert into paper_details values(1,’Descriptive Statistics’),
+(2,’English’),
+(3,’Calculus’),
+(4,’Algebra’),
+(5,’Probability’);
+
+Insert into academic_details values(1212,1,89,78),
+(1205,3,88,76),
+(1234,1,56,76),
+(1222,1,89,89),
+(1209,2,89,90);
+
+Select pd.paper_code, pd.paper_name, pi.name from paper_details pd, personal_info pi where paper_code=2 and pi.roll_no in 
+(select roll_no from academic_details where paper_code=2 and attendance>75 and marks>60);
+Select name from personal_info pi, academic_details ad
+Where pi.roll_no = ad.roll_no and ad.marks>60 and ad.paper_code=1 and pi.address=’Delhi’ ;
+select pi.name, ad.attendence, ad.marks from personal_info pi, academic_details ad where pi.roll_no=ad.roll_no;
+select name from personal_info pi, academic_details ad 
+where pi.roll_no=ad.roll_no and pi.roll_no = (select roll_no from academic_details where marks=(select max(marks) from academic_details));
