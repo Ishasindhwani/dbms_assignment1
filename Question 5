@@ -1,0 +1,88 @@
+Q5
+mysql> create database product;
+mysql> use product;
+
+mysql> create table suppliers(
+    -> Sno int(8) primary key,
+    -> Sname varchar(20) not null,
+    -> Status char(20) not null,
+    -> Scity char(30) not null); 
+
+mysql> create table Parts(
+    -> PNo int(8) primary key,
+    -> Pname varchar(20) not null,
+    -> Colour varchar(20) not null,
+    -> Weight int(4) not null,
+    -> City char(20) not null);
+
+mysql> create table Project(
+    -> Jno int(8) Primary key,
+    -> Jname char(20) not null,
+    -> Jcity char(20) not null);
+
+mysql> create table  Shipment(
+    -> Sno varchar(20) not null,
+    -> Pno int(8) not null,
+    -> Jno int(8) not null,
+    -> Quantity int(8) not null,
+    -> foreign key(Sno) references suppliers(Sno),
+    -> foreign key(Pno) references Parts(Pno),
+    -> Foreign key(Jno) references Project(Jno));
+
+mysql> insert into suppliers values(1,"S1",40,"BRISBEN");
+mysql> insert into suppliers values(2,"S2",59,"AUSTRALLIA");
+mysql> insert into suppliers values(3,"S4",92,"PARIS");
+mysql> insert into suppliers values(4,"S2",30,"LAS VEGAS");
+mysql> insert into suppliers values(5,"S3",15,"LONDON");
+
+mysql> insert into parts values( 001,"P1","BLUE",34,"PARIS");
+mysql> insert into parts values( 002,"P2","GREEN",10,"BRISBEN");
+mysql> insert into parts values( 003,"P3","RED",24,"LONDON");
+mysql> insert into parts values( 004,"P2","Green",50,"LONDON");
+mysql> insert into parts values( 005,"P2","Black",30,"AUSTRALLIA");
+
+mysql> insert into project values(201,"J1","BRISBEN");
+mysql> insert into project values(202,"J2","AUSTRALLIA");
+mysql> insert into project values(203,"J3","PARIS");
+mysql> insert into project values(204,"J4","LONDON");
+mysql> insert into project values(205,"J4","PARIS");
+
+mysql> insert into shipment values(1,004,202,300);
+mysql> insert into shipment values(3,005,203,230);
+mysql> insert into shipment values(5,002,203,540);
+mysql> insert into shipment values(1,003,201,240);
+mysql> insert into shipment values(2,001,205,890);
+mysql> insert into shipment values(1,001,202,480);
+
+Q (a) Primary Key- Sno in table Suppliers
+                            Pno in table Parts
+                            Jno in table Project
+
+        Foreign Key- Sno in table Shipment
+                            Pno in table Shipment
+                            Jno in table Shipment
+
+Q (b) mysql> select Sno from suppliers where scity="Paris" and Status>20;
+
+Q (c) mysql> Select * from suppliers where Sno in(select Sno from shipment where Pno in(select Pno from parts where Pname="P2")) Order by sno;
+
+Q (d) mysql> Select Sname from suppliers where Sno in(Select distinct sno from shipment where Pno in(select Pno from parts where Pname!="P2"));
+
+Q (e) mysql> select s.Sno, s.Pno, s.Jno, s.Quantity, s.quantity*p.weight as "Total_shipment_weight" from shipment as s, parts as p where s.pno=p.pno;
+
+Q (f) mysql> Select * from shipment where quantity between 300 and 750;
+
+Q (g) mysql> select Pno from parts where weight>16 or pno in(select pno from shipment where sno in(select s.sno from shipment as s, suppliers as su where s.sno=su.sno and su.sname="S2"));
+
+Q (h) mysql> select city from parts where colour="Red" and Pno in(select pno from shipment where quantity>5);
+
+Q (i) mysql> select * from parts where pno in(select Pno from shipment where sno in(select sno from suppliers where Scity="London"));
+
+Q (j) mysql> select Pno from shipment where sno in(select sno from suppliers where scity="London") and Jno in(Select jno from project where Jcity="London");
+
+Q (k) mysql> select count(distinct(Jno)) as "No. of Project Supplied by supplier S1" from shipment where sno in(select sno from suppliers where Sname="S1");
+
+Q (l) mysql> select count(*) from parts where Pno in(Select Pno from shipment where sno in(select Sno from suppliers where sname ="S1")) and Pname="P1";
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
